@@ -87,6 +87,10 @@ namespace mmio
 		}
 #else
 		if (this->_handle.addr != MAP_FAILED) {
+			if constexpr (MODE == mapmode::readwrite) {
+				[[maybe_unused]] const auto success = ::msync(this->_handle.addr, this->_size, MS_SYNC);
+				assert(success == 0);
+			}
 			[[maybe_unused]] const auto success = ::munmap(this->_handle.addr, this->_size);
 			assert(success == 0);
 			this->_handle.addr = MAP_FAILED;
@@ -183,17 +187,22 @@ namespace mmio
 	{
 		this->_handle.fd = ::open(
 			a_path,
-			MODE == mapmode::readonly ? O_RDONLY : O_RDWR);
+			MODE == mapmode::readonly ? O_RDONLY : O_RDWR | O_CREAT,
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);  // -rw-r--r--
 		if (this->_handle.fd == -1) {
 			return false;
 		}
 
 		struct ::stat s = {};
-		if (a_size == std::dynamic_extent) {
-			if (::fstat(this->_handle.fd, &s) == -1) {
+		if (::fstat(this->_handle.fd, &s) == -1) {
+			return false;
+		}
+		if (a_size != std::dynamic_extent) {
+			// extend file to requested size if too small
+			if (static_cast<std::size_t>(s.st_size) < a_size &&
+				::ftruncate(this->_handle.fd, a_size) == -1) {
 				return false;
 			}
-		} else {
 			s.st_size = static_cast<::off_t>(a_size);
 		}
 		this->_size = static_cast<std::size_t>(s.st_size);
