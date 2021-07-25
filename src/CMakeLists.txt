@@ -17,7 +17,7 @@ source_group(
 		${SOURCE_FILES}
 )
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang|GNU")
 	set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
@@ -47,7 +47,7 @@ target_compile_features(
 		cxx_std_17
 )
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang|GNU")
 	target_compile_options(
 		"${PROJECT_NAME}"
 		PRIVATE
