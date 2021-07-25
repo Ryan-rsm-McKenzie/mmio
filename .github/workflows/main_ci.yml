@@ -77,6 +77,7 @@ jobs:
       - name: Collect code coverage
         uses: codecov/codecov-action@v2
         with:
+          directory: build
           fail_ci_if_error: true
           working-directory: ${{ github.workspace }}/mmio/build
 
