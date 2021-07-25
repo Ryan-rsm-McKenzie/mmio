@@ -26,7 +26,6 @@ jobs:
     strategy:
       matrix:
         config: [ ubuntu-gcc, ubuntu-clang, windows-msvc ]
-        os: [ ubuntu-latest, windows-latest ]
         include:
           - config: ubuntu-gcc
             os: ubuntu-latest
