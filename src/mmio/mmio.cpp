@@ -147,7 +147,7 @@ namespace mmio
 		}
 
 		::LARGE_INTEGER size = {};
-		if (a_size == std::dynamic_extent) {
+		if (a_size == dynamic_size) {
 			if (::GetFileSizeEx(this->_handle.file, &size) == 0) {
 				return false;
 			}
@@ -197,7 +197,7 @@ namespace mmio
 		if (::fstat(this->_handle.fd, &s) == -1) {
 			return false;
 		}
-		if (a_size != std::dynamic_extent) {
+		if (a_size != dynamic_size) {
 			// extend file to requested size if too small
 			if (static_cast<std::size_t>(s.st_size) < a_size &&
 				::ftruncate(this->_handle.fd, a_size) == -1) {

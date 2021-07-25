@@ -21,7 +21,6 @@ namespace
 	template <mmio::mapmode M>
 	void assert_closed(const mmio::mapped_file<M>& a_file)
 	{
-		REQUIRE(a_file.as_bytes().empty());
 		REQUIRE(a_file.data() == nullptr);
 		REQUIRE(a_file.empty());
 		REQUIRE(!a_file.is_open());
@@ -31,9 +30,6 @@ namespace
 	template <mmio::mapmode M>
 	void assert_open(const mmio::mapped_file<M>& a_file, std::size_t a_size)
 	{
-		REQUIRE(a_file.as_bytes().data() == a_file.data());
-		REQUIRE(a_file.as_bytes().empty() == a_file.empty());
-		REQUIRE(a_file.as_bytes().size() == a_file.size());
 		REQUIRE(a_file.data() != nullptr);
 		REQUIRE(!a_file.empty());
 		REQUIRE(a_file.size() == a_size);

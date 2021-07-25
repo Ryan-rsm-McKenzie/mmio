@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <filesystem>
 #include <memory>
-#include <span>
 #include <type_traits>
 #include <utility>
 
@@ -25,6 +24,8 @@ namespace mmio
 		readonly,
 		readwrite
 	};
+
+	constexpr auto dynamic_size = static_cast<std::size_t>(-1);
 
 #if MMIO_OS_WINDOWS
 	struct native_handle_type final
@@ -71,12 +72,6 @@ namespace mmio
 			return *this;
 		}
 
-		[[nodiscard]] auto as_bytes() const noexcept
-			-> std::span<value_type>
-		{
-			return { this->data(), this->size() };
-		}
-
 		void close() noexcept;
 		[[nodiscard]] auto data() const noexcept -> value_type*;
 		[[nodiscard]] bool empty() const noexcept { return this->size() == 0; }
@@ -90,7 +85,7 @@ namespace mmio
 
 		bool open(
 			std::filesystem::path a_path,
-			std::size_t a_size = std::dynamic_extent) noexcept
+			std::size_t a_size = dynamic_size) noexcept
 		{
 			this->close();
 			if (this->do_open(a_path.c_str(), a_size)) {

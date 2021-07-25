@@ -44,7 +44,7 @@ set_target_properties(
 target_compile_features(
 	"${PROJECT_NAME}"
 	PUBLIC
-		cxx_std_20
+		cxx_std_17
 )
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
