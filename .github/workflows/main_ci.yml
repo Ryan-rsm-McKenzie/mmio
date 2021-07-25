@@ -2,7 +2,7 @@ name: Main CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - '.github/workflows/main_ci.yml'
       - 'cmake/**'
@@ -13,7 +13,7 @@ on:
       - 'CMakePresets.json'
       - 'vcpkg.json'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
   workflow_dispatch:
 
 env:

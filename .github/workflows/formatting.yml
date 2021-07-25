@@ -2,7 +2,7 @@ name: Apply Formatting
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - '.github/workflows/formatting.yml'
       - 'include/**/*.cpp'
@@ -12,7 +12,7 @@ on:
       - 'tests/**/*.cpp'
       - 'tests/**/*.hpp'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
