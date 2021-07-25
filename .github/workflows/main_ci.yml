@@ -126,5 +126,5 @@ jobs:
         uses: codecov/codecov-action@v2
         with:
           fail_ci_if_error: true
-          files: mmio/build/ctestCoverage.xml
+          files: build/ctestCoverage.xml
           working-directory: ${{ github.workspace }}/mmio/build
