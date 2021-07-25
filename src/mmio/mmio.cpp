@@ -177,7 +177,9 @@ namespace mmio
 	}
 #else
 	template <mapmode MODE>
-	bool mapped_file<MODE>::do_open(const char* a_path) noexcept
+	bool mapped_file<MODE>::do_open(
+		const char* a_path,
+		std::size_t a_size) noexcept
 	{
 		this->_handle.fd = ::open(
 			a_path,
