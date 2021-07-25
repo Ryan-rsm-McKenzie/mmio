@@ -1,0 +1,112 @@
+name: Main CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/main_ci.yml'
+      - 'cmake/**'
+      - 'include/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'CMakeLists.txt'
+      - 'CMakePresets.json'
+      - 'vcpkg.json'
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+env:
+  BUILD_TYPE: Debug
+  VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg-cache
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        config: [ ubuntu-gcc, ubuntu-clang, windows-msvc ]
+        os: [ ubuntu-latest, windows-latest ]
+        include:
+          - config: ubuntu-gcc
+            os: ubuntu-latest
+            cmake-preset: ninja-linux-apt
+            cc: gcc-10
+            cxx: g++-10
+          - config: ubuntu-clang
+            os: ubuntu-latest
+            cmake-preset: ninja-linux-apt
+            cc: clang-12
+            cxx: clang++-12
+          - config: windows-msvc
+            os: windows-latest
+            cmake-preset: vs2019-windows-vcpkg
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: mmio
+
+      - name: Setup Linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
+          echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
+
+          wget https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip
+          unzip ninja-linux.zip
+          sudo mv ninja /usr/local/bin
+
+      - name: Download Catch2
+        uses: actions/checkout@v2
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        with:
+          ref: v2.13.6
+          repository: catchorg/Catch2
+          path: catch2
+
+      - name: Install Catch2
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        working-directory: ${{ github.workspace }}/catch2
+        run: |
+          cmake -B build -S . -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCATCH_BUILD_TESTING=OFF -DCATCH_ENABLE_WERROR=OFF -DCATCH_INSTALL_DOCS=OFF
+          cmake --build build
+          sudo cmake --install build
+
+      - name: Setup vcpkg
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          mkdir -p ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          cd $env:VCPKG_INSTALLATION_ROOT
+          ./bootstrap-vcpkg.bat
+          ./vcpkg --version > ${{ github.workspace }}/vcpkg-version.txt
+
+      - name: Cache vcpkg
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: actions/cache@v2
+        id: vcpkg-cache
+        env:
+          cache-name: vcpkg-cache
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}/*
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('mmio/**/vcpkg.json', 'vcpkg-version.txt') }}
+
+      - name: Configure CMake
+        working-directory: ${{ github.workspace }}/mmio
+        run: cmake --preset ${{ matrix.cmake-preset }} -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+
+      - name: Build
+        working-directory: ${{ github.workspace }}/mmio
+        run: cmake --build build --config ${{ env.BUILD_TYPE }}
+
+      - name: Test
+        working-directory: ${{ github.workspace }}/mmio/build
+        run: ctest -C ${{ env.BUILD_TYPE }} -V
+
+      - name: Collect code coverage
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: codecov/codecov-action@v1.5.2
+        with:
+          fail_ci_if_error: true
+          functionalities: coveragepy
+          working-directory: ${{ github.workspace }}/mmio/build
