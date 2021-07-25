@@ -16,6 +16,7 @@
 
 using namespace std::literals;
 
+
 namespace
 {
 	template <mmio::mapmode M>
