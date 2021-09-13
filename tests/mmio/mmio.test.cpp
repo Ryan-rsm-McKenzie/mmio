@@ -75,7 +75,7 @@ TEST_CASE("reading")
 	mmio::mapped_file_source f;
 	assert_closed(f);
 
-	REQUIRE(f.open(filePath));
+	f = mmio::mapped_file_source{ filePath };
 	assert_open(f, size);
 	REQUIRE(std::memcmp(f.data(), payload, f.size()) == 0);
 
@@ -105,7 +105,7 @@ TEST_CASE("writing")
 	assert_closed(f);
 
 	std::filesystem::create_directories(filePath.parent_path());
-	REQUIRE(f.open(filePath, size));
+	f = mmio::mapped_file_sink{ filePath, size };
 	assert_open(f, size);
 	std::memcpy(f.data(), payload, size);
 
@@ -119,4 +119,10 @@ TEST_CASE("writing")
 	read.resize(size);
 	open_fstream<true>(filePath).read(read.data(), size);
 	REQUIRE(read == payload);
+}
+
+TEST_CASE("exceptions")
+{
+	REQUIRE_THROWS_AS(mmio::mapped_file_source{ "." }, std::system_error);
+	REQUIRE_THROWS_AS(mmio::mapped_file_sink{ "." }, std::system_error);
 }

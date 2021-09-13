@@ -1,7 +1,9 @@
 #include "mmio/mmio.hpp"
 
 #include <cassert>
+#include <cerrno>
 #include <cstddef>
+#include <system_error>
 #include <utility>
 
 #if MMIO_OS_WINDOWS
@@ -62,6 +64,19 @@ namespace mmio
 #else
 	void* const native_handle_type::map_failed = MAP_FAILED;
 #endif
+
+	template <mapmode MODE>
+	mapped_file<MODE>::mapped_file(
+		std::filesystem::path a_path,
+		std::size_t a_size)
+	{
+		if (!this->open(std::move(a_path), a_size)) {
+			throw std::system_error{
+				std::error_code{ errno, std::generic_category() },
+				"failed to open file"
+			};
+		}
+	}
 
 	template <mapmode MODE>
 	void mapped_file<MODE>::close() noexcept

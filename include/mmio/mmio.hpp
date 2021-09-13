@@ -60,6 +60,7 @@ namespace mmio
 		mapped_file() noexcept = default;
 		mapped_file(const mapped_file&) = delete;
 		mapped_file(mapped_file&& a_rhs) noexcept { this->do_move(std::move(a_rhs)); }
+		mapped_file(std::filesystem::path a_path, std::size_t a_size = dynamic_size);
 
 		~mapped_file() noexcept { this->close(); }
 
