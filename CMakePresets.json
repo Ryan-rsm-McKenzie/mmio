@@ -74,18 +74,6 @@
     },
     {
       "environment": {
-        "CXXFLAGS": "/MP /W4 /WX /external:anglebrackets /external:W0 $penv{CXXFLAGS}"
-      },
-      "generator": "Visual Studio 16 2019",
-      "inherits": [
-        "cmake-dev",
-        "vcpkg",
-        "windows"
-      ],
-      "name": "vs2019-windows-vcpkg"
-    },
-    {
-      "environment": {
         "CXXFLAGS": "/MP /W4 /WX $penv{CXXFLAGS}"
       },
       "generator": "Visual Studio 17 2022",
@@ -96,6 +84,18 @@
       ],
       "name": "vs2022-windows-vcpkg",
       "toolset": "v143"
+    },
+    {
+      "environment": {
+        "CXXFLAGS": "/MP /W4 /WX /external:anglebrackets /external:W0 $penv{CXXFLAGS}"
+      },
+      "generator": "Ninja",
+      "inherits": [
+        "cmake-dev",
+        "vcpkg",
+        "windows"
+      ],
+      "name": "ninja-windows-vcpkg"
     },
     {
       "generator": "Ninja",
