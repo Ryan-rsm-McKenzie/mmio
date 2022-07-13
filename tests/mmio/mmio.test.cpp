@@ -126,3 +126,20 @@ TEST_CASE("exceptions")
 	REQUIRE_THROWS_AS(mmio::mapped_file_source{ "." }, std::system_error);
 	REQUIRE_THROWS_AS(mmio::mapped_file_sink{ "." }, std::system_error);
 }
+
+TEST_CASE("memory map a file in write mode, which does not already exist")
+{
+	const std::filesystem::path root{ "not_exist"sv };
+	const auto filePath = root / "example.txt"sv;
+
+	std::filesystem::remove(filePath);
+	REQUIRE(!std::filesystem::exists(filePath));
+
+	std::filesystem::create_directories(filePath.parent_path());
+	mmio::mapped_file_sink f;
+	REQUIRE(!f.is_open());
+	REQUIRE(f.open(filePath, 42));
+	f.close();
+
+	REQUIRE(std::filesystem::exists(filePath));
+}

@@ -154,7 +154,7 @@ namespace mmio
 			MODE == mapmode::readonly ? GENERIC_READ : GENERIC_READ | GENERIC_WRITE,
 			MODE == mapmode::readonly ? FILE_SHARE_READ : FILE_SHARE_READ | FILE_SHARE_WRITE,
 			nullptr,
-			MODE == mapmode::readonly ? OPEN_EXISTING : CREATE_NEW,
+			MODE == mapmode::readonly ? OPEN_EXISTING : CREATE_ALWAYS,
 			MODE == mapmode::readonly ? FILE_ATTRIBUTE_READONLY : FILE_ATTRIBUTE_NORMAL,
 			nullptr);
 		if (this->_handle.file == INVALID_HANDLE_VALUE) {
