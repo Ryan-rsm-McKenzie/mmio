@@ -6,7 +6,7 @@
 #include <string_view>
 #include <type_traits>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #ifdef _WIN32
 #	include <Windows.h>  // ensure windows.h compatibility

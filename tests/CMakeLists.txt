@@ -3,7 +3,6 @@ set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
 set(SOURCE_DIR "${ROOT_DIR}/tests")
 set(SOURCE_FILES
 	"${SOURCE_DIR}/mmio/mmio.test.cpp"
-	"${SOURCE_DIR}/main.cpp"
 )
 
 source_group(TREE "${SOURCE_DIR}" PREFIX "src" FILES ${SOURCE_FILES})
@@ -24,6 +23,6 @@ target_include_directories(
 target_link_libraries(
 	tests
 	PRIVATE
-		Catch2::Catch2
+		Catch2::Catch2WithMain
 		mmio::mmio
 )
