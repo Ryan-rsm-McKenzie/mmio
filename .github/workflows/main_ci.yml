@@ -139,7 +139,7 @@ jobs:
 
       - name: Configure CMake
         working-directory: ${{ github.workspace }}/mmio
-        run: cmake --preset ninja-windows-vcpkg -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        run: cmake --preset ninja-windows-vcpkg -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DVCPKG_TARGET_TRIPLET=${{ matrix.arch }}-windows-static-md
 
       - name: Build
         working-directory: ${{ github.workspace }}/mmio
