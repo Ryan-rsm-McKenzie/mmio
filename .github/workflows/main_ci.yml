@@ -2,7 +2,7 @@ name: Main CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - '.github/workflows/main_ci.yml'
       - 'cmake/**'
@@ -13,7 +13,7 @@ on:
       - 'CMakePresets.json'
       - 'vcpkg.json'
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 env:
@@ -25,8 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        config: [ gcc-9, gcc-11, clang-6, clang-12 ]
-        arch: [ x86, x64 ]
+        config: [gcc-9, gcc-11, clang-6, clang-12]
+        arch: [x86, x64]
         include:
           - config: gcc-9
             compiler: gcc
@@ -102,8 +102,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        compiler: [ msvc ]
-        arch: [ x86, x64 ]
+        compiler: [msvc]
+        arch: [x86, x64]
 
     steps:
       - uses: actions/checkout@v2
