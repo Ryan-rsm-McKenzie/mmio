@@ -424,8 +424,8 @@ namespace mmio
 		return static_cast<value_type*>(this->_handle.base_address);
 #else
 		return this->_handle.addr != MAP_FAILED ?
-                   static_cast<value_type*>(this->_handle.addr) :
-                   nullptr;
+		           static_cast<value_type*>(this->_handle.addr) :
+		           nullptr;
 #endif
 	}
 
