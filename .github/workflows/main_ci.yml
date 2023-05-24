@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        config: [gcc-9, gcc-11, clang-6, clang-12]
+        config: [gcc-9, gcc-12, clang-11, clang-15]
         arch: [x86, x64]
         include:
           - config: gcc-9
