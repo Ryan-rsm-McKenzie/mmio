@@ -222,7 +222,7 @@ namespace mmio
 #undef CASE
 		}
 
-		[[nodiscard]] constexpr auto error_kind_to_posix(ErrorKind a_kind) noexcept
+		[[nodiscard]] constexpr auto [[maybe_unused]] error_kind_to_posix(ErrorKind a_kind) noexcept
 			-> posix_error_t
 		{
 #define CASE(a_from, a_to)  \
