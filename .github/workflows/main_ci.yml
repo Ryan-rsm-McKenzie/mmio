@@ -31,15 +31,15 @@ jobs:
           - config: gcc-9
             compiler: gcc
             version: "9"
-          - config: gcc-11
+          - config: gcc-12
             compiler: gcc
-            version: "11"
-          - config: clang-6
-            compiler: clang
-            version: "6"
-          - config: clang-12
-            compiler: clang
             version: "12"
+          - config: clang-11
+            compiler: clang
+            version: "11"
+          - config: clang-15
+            compiler: clang
+            version: "15"
 
     steps:
       - uses: actions/checkout@v2
