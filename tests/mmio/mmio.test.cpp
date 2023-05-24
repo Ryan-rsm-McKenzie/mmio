@@ -143,3 +143,14 @@ TEST_CASE("memory map a file in write mode, which does not already exist")
 
 	REQUIRE(std::filesystem::exists(filePath));
 }
+
+TEST_CASE("failure to open a file will yield a descriptive error code")
+{
+	mmio::mapped_file_source f;
+	const auto result = f.open(".");
+	REQUIRE(!result);
+	REQUIRE(result->value() == static_cast<int>(std::errc::permission_denied));
+}
+
+static_assert(std::is_move_assignable_v<mmio::open_result>);
+static_assert(std::is_move_constructible_v<mmio::open_result>);

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <memory>
+#include <system_error>
 #include <type_traits>
 #include <utility>
 
@@ -19,6 +20,12 @@
 
 namespace mmio
 {
+	enum class mapmode;
+	struct native_handle_type;
+	class open_result;
+	template <mapmode>
+	class mapped_file;
+
 	enum class mapmode
 	{
 		readonly,
@@ -45,6 +52,28 @@ namespace mmio
 		void* addr{ map_failed };
 	};
 #endif
+
+	class open_result final
+	{
+	public:
+		using value_type = std::error_code;
+
+		open_result() = delete;
+
+		[[nodiscard]] explicit operator bool() const noexcept { return this->_error.value() == 0; }
+		[[nodiscard]] const value_type& operator*() const noexcept { return this->_error; }
+		[[nodiscard]] const value_type* operator->() const noexcept { return &this->_error; }
+
+	private:
+		template <mapmode>
+		friend class mapped_file;
+
+		open_result(value_type a_error) noexcept :
+			_error(std::move(a_error))
+		{}
+
+		value_type _error;
+	};
 
 	template <mapmode MODE>
 	class mapped_file final :
@@ -84,18 +113,10 @@ namespace mmio
 			return this->_handle;
 		}
 
-		bool open(
+		auto open(
 			std::filesystem::path a_path,
 			std::size_t a_size = dynamic_size) noexcept
-		{
-			this->close();
-			if (this->do_open(a_path.c_str(), a_size)) {
-				return true;
-			} else {
-				this->close();
-				return false;
-			}
-		}
+			-> open_result;
 
 		[[nodiscard]] auto size() const noexcept -> std::size_t { return this->_size; }
 
