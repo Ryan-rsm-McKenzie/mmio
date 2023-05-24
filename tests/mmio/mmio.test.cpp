@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <fstream>
 #include <ios>
+#include <iterator>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -150,6 +151,26 @@ TEST_CASE("failure to open a file will yield a descriptive error code")
 	const auto result = f.open(".");
 	REQUIRE(!result);
 	REQUIRE(result->value() == static_cast<int>(std::errc::permission_denied));
+}
+
+TEST_CASE("support for ranges")
+{
+	const std::filesystem::path root{ "range_support"sv };
+	const auto filePath = root / "example.txt"sv;
+
+	std::filesystem::remove(filePath);
+	REQUIRE(!std::filesystem::exists(filePath));
+
+	constexpr auto size = 100;
+
+	std::filesystem::create_directories(filePath.parent_path());
+	mmio::mapped_file_sink f(filePath, size);
+	REQUIRE(f.is_open());
+	REQUIRE(f.size() == size);
+
+	REQUIRE(f.begin() == f.data());
+	REQUIRE(f.end() == f.data() + size);
+	REQUIRE(std::distance(f.begin(), f.end()) == size);
 }
 
 static_assert(std::is_move_assignable_v<mmio::open_result>);

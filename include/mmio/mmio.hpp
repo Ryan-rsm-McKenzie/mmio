@@ -86,6 +86,8 @@ namespace mmio
 				const std::byte,
 				std::byte>;
 
+		using iterator = value_type*;
+
 		mapped_file() noexcept = default;
 		mapped_file(const mapped_file&) = delete;
 		mapped_file(mapped_file&& a_rhs) noexcept { this->do_move(std::move(a_rhs)); }
@@ -101,6 +103,9 @@ namespace mmio
 			}
 			return *this;
 		}
+
+		[[nodiscard]] auto begin() const noexcept -> iterator { return this->data(); }
+		[[nodiscard]] auto end() const noexcept -> iterator { return this->data() + this->size(); }
 
 		void close() noexcept;
 		[[nodiscard]] auto data() const noexcept -> value_type*;
