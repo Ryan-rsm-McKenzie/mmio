@@ -222,11 +222,12 @@ namespace mmio
 #undef CASE
 		}
 
-		[[nodiscard]] constexpr auto [[maybe_unused]] error_kind_to_posix(ErrorKind a_kind) noexcept
+#if MMIO_OS_WINDOWS
+		[[nodiscard]] constexpr auto error_kind_to_posix(ErrorKind a_kind) noexcept
 			-> posix_error_t
 		{
-#define CASE(a_from, a_to)  \
-	case ErrorKind::a_from: \
+#	define CASE(a_from, a_to) \
+	case ErrorKind::a_from:    \
 		return a_to
 
 			// https://github.com/rust-lang/rust/blob/97d328012b9ed9b7d481c40e84aa1f2c65b33ec8/library/std/src/sys/unix/mod.rs#L237
@@ -271,16 +272,17 @@ namespace mmio
 				CASE(WouldBlock, EWOULDBLOCK);
 
 			default:
-#if __cpp_lib_is_constant_evaluated
+#	if __cpp_lib_is_constant_evaluated
 				if constexpr (!std::is_constant_evaluated())
-#endif
+#	endif
 				{
 					return EIO;
 				}
 			}
 
-#undef CASE
+#	undef CASE
 		}
+#endif
 
 		[[nodiscard]] auto decode_os_error() noexcept
 			-> std::errc
