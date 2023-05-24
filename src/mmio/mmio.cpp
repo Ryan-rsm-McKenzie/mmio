@@ -179,19 +179,15 @@ namespace mmio
 				CASE(ENOSTR, not_a_stream);
 				CASE(ENOTCONN, not_connected);
 				CASE(ENOMEM, not_enough_memory);
-				CASE(ENOTSUP, not_supported);
 				CASE(ECANCELED, operation_canceled);
 				CASE(EINPROGRESS, operation_in_progress);
 				CASE(EPERM, operation_not_permitted);
-				CASE(EOPNOTSUPP, operation_not_supported);
-				CASE(EWOULDBLOCK, operation_would_block);
 				CASE(EOWNERDEAD, owner_dead);
 				CASE(EACCES, permission_denied);
 				CASE(EPROTO, protocol_error);
 				CASE(EPROTONOSUPPORT, protocol_not_supported);
 				CASE(EROFS, read_only_file_system);
 				CASE(EDEADLK, resource_deadlock_would_occur);
-				CASE(EAGAIN, resource_unavailable_try_again);
 				CASE(ERANGE, result_out_of_range);
 				CASE(ENOTRECOVERABLE, state_not_recoverable);
 				CASE(ETIME, stream_timeout);
@@ -203,6 +199,16 @@ namespace mmio
 				CASE(ELOOP, too_many_symbolic_link_levels);
 				CASE(EOVERFLOW, value_too_large);
 				CASE(EPROTOTYPE, wrong_protocol_type);
+
+				CASE(ENOTSUP, not_supported);
+#if ENOTSUP != EOPNOTSUPP
+				CASE(EOPNOTSUPP, operation_not_supported);
+#endif
+
+				CASE(EAGAIN, resource_unavailable_try_again);
+#if EAGAIN != EWOULDBLOCK
+				CASE(EWOULDBLOCK, operation_would_block);
+#endif
 
 			default:
 #if __cpp_lib_is_constant_evaluated
