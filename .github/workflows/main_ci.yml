@@ -4,14 +4,14 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/main_ci.yml'
-      - 'cmake/**'
-      - 'include/**'
-      - 'src/**'
-      - 'tests/**'
-      - 'CMakeLists.txt'
-      - 'CMakePresets.json'
-      - 'vcpkg.json'
+      - ".github/workflows/main_ci.yml"
+      - "cmake/**"
+      - "include/**"
+      - "src/**"
+      - "tests/**"
+      - "CMakeLists.txt"
+      - "CMakePresets.json"
+      - "vcpkg.json"
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -30,16 +30,16 @@ jobs:
         include:
           - config: gcc-9
             compiler: gcc
-            version: '9'
+            version: "9"
           - config: gcc-11
             compiler: gcc
-            version: '11'
+            version: "11"
           - config: clang-6
             compiler: clang
-            version: '6'
+            version: "6"
           - config: clang-12
             compiler: clang
-            version: '12'
+            version: "12"
 
     steps:
       - uses: actions/checkout@v2
