@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        config: [gcc-9, gcc-12, clang-11, clang-15]
+        config: [gcc-9, gcc-12, clang-13, clang-15]
         arch: [x86, x64]
         include:
           - config: gcc-9
@@ -34,9 +34,9 @@ jobs:
           - config: gcc-12
             compiler: gcc
             version: "12"
-          - config: clang-11
+          - config: clang-13
             compiler: clang
-            version: "11"
+            version: "13"
           - config: clang-15
             compiler: clang
             version: "15"
